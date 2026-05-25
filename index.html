@@ -17,9 +17,9 @@
             <p class="text-lg text-indigo-200 mb-8">
                 Automatiza tus agendas, controla tus comisiones y olvídate de las tareas administrativas estresantes.
             </p>
-            <a href="#registro-beta" class="inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+            <button onclick="registrarInteraccion()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg px-8 py-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
                 Quiero acceso gratuito a la prueba Beta 🚀
-            </a>
+            </button>
         </div>
     </header>
 
@@ -64,109 +64,21 @@
         </div>
     </section>
 
-    <section id="registro-beta" class="py-16 px-6 bg-white border-y border-gray-200 scroll-mt-6">
-        <div class="max-w-lg mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 text-center mb-2">Únete a la lista de espera</h2>
-            <p class="text-gray-600 text-center mb-8 text-sm md:text-base">Déjanos tus datos y te avisaremos cuando abramos nuevos cupos de la beta.</p>
-            <form id="lead-form" class="space-y-4" novalidate>
-                <div>
-                    <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">Nombre completo *</label>
-                    <input type="text" id="full_name" name="full_name" required maxlength="200" autocomplete="name"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Ej. María López">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico *</label>
-                    <input type="email" id="email" name="email" required maxlength="320" autocomplete="email"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="tu@correo.com">
-                </div>
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono (opcional)</label>
-                    <input type="tel" id="phone" name="phone" maxlength="40" autocomplete="tel"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="+52 …">
-                </div>
-                <div>
-                    <label for="business_name" class="block text-sm font-medium text-gray-700 mb-1">Nombre del negocio (opcional)</label>
-                    <input type="text" id="business_name" name="business_name" maxlength="200" autocomplete="organization"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Barbería Central">
-                </div>
-                <div>
-                    <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Comentario (opcional)</label>
-                    <textarea id="notes" name="notes" rows="3" maxlength="1000"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none resize-y" placeholder="Cuéntanos qué te gustaría ver en la beta…"></textarea>
-                </div>
-                <p id="form-message" class="text-sm text-center min-h-[1.25rem]" role="status" aria-live="polite"></p>
-                <button type="submit" id="submit-btn"
-                    class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 rounded-lg shadow transition">
-                    Enviar solicitud
-                </button>
-            </form>
-        </div>
-    </section>
-
     <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm">
         <p>&copy; 2026 Barber Solutions. Desarrollado con fines académicos.</p>
     </footer>
 
     <script>
-        (function () {
-            var form = document.getElementById('lead-form');
-            var msg = document.getElementById('form-message');
-            var btn = document.getElementById('submit-btn');
-
-            form.addEventListener('submit', async function (e) {
-                e.preventDefault();
-                msg.textContent = '';
-                msg.className = 'text-sm text-center min-h-[1.25rem]';
-
-                var full_name = document.getElementById('full_name').value.trim();
-                var email = document.getElementById('email').value.trim();
-                var phone = document.getElementById('phone').value.trim();
-                var business_name = document.getElementById('business_name').value.trim();
-                var notes = document.getElementById('notes').value.trim();
-
-                if (!full_name || !email) {
-                    msg.textContent = 'Completa nombre y correo electrónico.';
-                    msg.classList.add('text-red-600');
-                    return;
-                }
-
-                btn.disabled = true;
-                msg.textContent = 'Enviando…';
-                msg.classList.add('text-gray-600');
-
-                try {
-                    var res = await fetch('/api/leads', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            full_name: full_name,
-                            email: email,
-                            phone: phone || null,
-                            business_name: business_name || null,
-                            notes: notes || null
-                        })
-                    });
-                    var data = await res.json().catch(function () { return {}; });
-
-                    if (res.ok && data.ok) {
-                        msg.textContent = '¡Listo! Gracias por registrarte. Te contactaremos pronto.';
-                        msg.classList.remove('text-gray-600');
-                        msg.classList.add('text-emerald-700');
-                        form.reset();
-                    } else {
-                        msg.textContent = data.error || 'No se pudo enviar. Inténtalo de nuevo.';
-                        msg.classList.remove('text-gray-600');
-                        msg.classList.add('text-red-600');
-                    }
-                } catch (err) {
-                    msg.textContent = 'Error de red. Comprueba tu conexión e inténtalo de nuevo.';
-                    msg.classList.remove('text-gray-600');
-                    msg.classList.add('text-red-600');
-                } finally {
-                    btn.disabled = false;
-                }
-            });
-        })();
+        function registrarInteraccion() {
+            // 1. Aquí puedes poner el link de tu formulario de Google Forms o de tu WhatsApp
+            const enlaceDestino = "https://docs.google.com/forms/d/e/1FAIpQLSfHcfajl7VGeGCDLB9l6DsRa_1S55HdRpLeCas_m8047axx-w/viewform?usp=dialog";
+            
+            // 2. Alerta visual (opcional) para confirmar que el botón funciona antes de redirigir
+            alert("¡Gracias por tu interés! Te estamos redirigiendo para registrar tus datos.");
+            
+            // 3. Redirección al formulario
+            window.location.href = enlaceDestino;
+        }
     </script>
 </body>
 </html>
